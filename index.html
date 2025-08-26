@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Julia - Artist Portfolio</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- ScrollReveal JS for animations -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+
+    <!-- Custom Styles and Animations -->
+    <style>
+        /* Use a more elegant font for headings and names */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* New pink and white gradient background */
+            background-color: #fdf2f8; /* fallback */
+            background-image: linear-gradient(145deg, #ffffff 0%, #fce7f3 100%);
+            color: #4b5563; /* Darker text for readability */
+            scroll-behavior: smooth;
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            color: #1f2937; /* Dark heading color */
+        }
+        
+        /* Hides section titles initially for the animation */
+        .section-title {
+            visibility: hidden;
+        }
+
+        /* Keyframe animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes gradient-pan {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Animation classes with delays */
+        .animate-fade-in-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; } /* New delay class */
+        .delay-400 { animation-delay: 0.4s; }
+
+        /* Class for the animated gradient text - updated colors */
+        .animated-gradient-text {
+            background: linear-gradient(90deg, #db2777, #c026d3, #db2777);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-pan 4s linear infinite;
+        }
+        
+        /* Style for the gallery items */
+        .gallery-item {
+            position: relative;
+            display: inline-block; /* Helps with masonry stability */
+            width: 100%;
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            /* Visibility hidden for ScrollReveal */
+            visibility: hidden;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Masonry layout for the gallery */
+        .masonry-gallery {
+            column-gap: 1.5rem;
+            columns: 1;
+        }
+        @media (min-width: 640px) { .masonry-gallery { columns: 2; } }
+        @media (min-width: 1024px) { .masonry-gallery { columns: 3; } }
+
+        /* Lightbox Modal Styles */
+        #lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+        #lightbox-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 8px;
+        }
+        #lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        #lightbox-close:hover { color: #ccc; }
+        
+        /* Scroll to top button */
+        #scrollTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #db2777;
+            color: white;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            transition: background-color 0.3s, opacity 0.3s, transform 0.3s;
+            box-shadow: 0 5px 15px rgba(219, 39, 119, 0.4);
+        }
+        #scrollTopBtn:hover { 
+            background-color: #be185d;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="text-center py-16 md:py-24 px-4">
+        <div class="max-w-4xl mx-auto flex flex-col items-center">
+            <!-- Profile Picture -->
+            <img 
+                src="profile.jpg" 
+                alt="Julia's Profile Picture" 
+                class="w-48 h-48 md:w-56 md:h-56 mx-auto rounded-full object-cover border-4 border-white shadow-lg animate-fade-in-up"
+                onerror="this.onerror=null;this.src='https://placehold.co/224x224/fbcfe8/db2777?text=Julia';"
+            >
+            
+            <!-- Name -->
+            <h1 class="text-5xl md:text-7xl font-bold mt-8 animate-fade-in-up delay-200 animated-gradient-text">
+                Julia
+            </h1>
+
+            <!-- Instagram Handle and Icon -->
+            <a href="https://www.instagram.com/julieptpv?igsh=eHcyamxsYjZrMnZ6" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 mt-4 animate-fade-in-up delay-300 text-gray-500 hover:text-pink-600 transition-colors">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/>
+                </svg>
+                <span class="text-lg md:text-xl tracking-wider">julieptpv</span>
+            </a>
+            
+            <!-- Title -->
+            <p class="text-xl md:text-2xl text-gray-500 mt-4 tracking-wider animate-fade-in-up delay-400">
+                Artist & Makeup Artist
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content: Galleries -->
+    <main class="px-6 sm:px-8 lg:px-12 pb-16">
+        
+        <!-- Art Section -->
+        <section id="art" class="max-w-7xl mx-auto mb-20">
+            <h2 class="section-title text-3xl md:text-4xl font-bold text-center mb-12">Art</h2>
+            <div class="masonry-gallery">
+                <!-- IMPORTANT: Name art images p1.jpg, p2.jpg, etc. -->
+                <div class="gallery-item"><img src="p1.jpg" alt="Artwork 1" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x800/e9d5ff/9333ea?text=p1.jpg';"></div>
+                <div class="gallery-item"><img src="p2.jpg" alt="Artwork 2" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x600/e9d5ff/9333ea?text=p2.jpg';"></div>
+                <div class="gallery-item"><img src="p3.jpg" alt="Artwork 3" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x900/e9d5ff/9333ea?text=p3.jpg';"></div>
+                <div class="gallery-item"><img src="p4.jpg" alt="Artwork 4" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x750/e9d5ff/9333ea?text=p4.jpg';"></div>
+                <div class="gallery-item"><img src="p5.jpg" alt="Artwork 5" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x850/e9d5ff/9333ea?text=p5.jpg';"></div>
+                <div class="gallery-item"><img src="p6.jpg" alt="Artwork 6" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x650/e9d5ff/9333ea?text=p6.jpg';"></div>
+                <div class="gallery-item"><img src="p7.jpg" alt="Artwork 7" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x800/e9d5ff/9333ea?text=p7.jpg';"></div>
+                <div class="gallery-item"><img src="p8.jpg" alt="Artwork 8" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x950/e9d5ff/9333ea?text=p8.jpg';"></div>
+                <div class="gallery-item"><img src="p9.jpg" alt="Artwork 9" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x700/e9d5ff/9333ea?text=p9.jpg';"></div>
+                <div class="gallery-item"><img src="p10.jpg" alt="Artwork 10" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x800/e9d5ff/9333ea?text=p10.jpg';"></div>
+                <div class="gallery-item"><img src="p11.jpg" alt="Artwork 11" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x750/e9d5ff/9333ea?text=p11.jpg';"></div>
+                <div class="gallery-item"><img src="p12.jpg" alt="Artwork 12" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x900/e9d5ff/9333ea?text=p12.jpg';"></div>
+                <div class="gallery-item"><img src="p13.jpg" alt="Artwork 13" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x600/e9d5ff/9333ea?text=p13.jpg';"></div>
+                <div class="gallery-item"><img src="p14.jpg" alt="Artwork 14" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x850/e9d5ff/9333ea?text=p14.jpg';"></div>
+                <div class="gallery-item"><img src="p15.jpg" alt="Artwork 15" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x800/e9d5ff/9333ea?text=p15.jpg';"></div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="https://www.instagram.com/julieptpv?igsh=eHcyamxsYjZrMnZ6" target="_blank" rel="noopener noreferrer" class="instagram-btn inline-block bg-pink-600 text-white font-bold py-3 px-8 rounded-lg text-lg hover:bg-pink-700 transition-transform hover:scale-105 duration-300 shadow-lg">
+                    See All Art on Instagram
+                </a>
+            </div>
+        </section>
+
+        <!-- Makeup Section -->
+        <section id="makeup" class="max-w-7xl mx-auto">
+            <h2 class="section-title text-3xl md:text-4xl font-bold text-center mb-12">Makeup Artistry</h2>
+            <div class="masonry-gallery">
+                <!-- IMPORTANT: Name makeup files m1.jpg, m1.mp4, etc. -->
+                <div class="gallery-item">
+                    <video autoplay loop muted playsinline class="w-full h-auto" poster="https://placehold.co/600x800/fbcfe8/db2777?text=m1.mp4">
+                        <source src="m1.mp4" type="video/mp4"> Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="gallery-item"><img src="m1.jpg" alt="Makeup 1" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x850/fbcfe8/db2777?text=m1.jpg';"></div>
+                <div class="gallery-item"><img src="m2.jpg" alt="Makeup 2" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x900/fbcfe8/db2777?text=m2.jpg';"></div>
+                <div class="gallery-item">
+                    <video autoplay loop muted playsinline class="w-full h-auto" poster="https://placehold.co/600x800/fbcfe8/db2777?text=m2.mp4">
+                        <source src="m2.mp4" type="video/mp4"> Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="gallery-item"><img src="m3.jpg" alt="Makeup 3" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x700/fbcfe8/db2777?text=m3.jpg';"></div>
+                <div class="gallery-item"><img src="m4.jpg" alt="Makeup 4" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x800/fbcfe8/db2777?text=m4.jpg';"></div>
+                <div class="gallery-item"><img src="m5.jpg" alt="Makeup 5" class="w-full h-auto gallery-img" onerror="this.onerror=null;this.src='https://placehold.co/600x750/fbcfe8/db2777?text=m5.jpg';"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 px-4 border-t border-pink-100 mt-12 bg-white/50">
+        <p class="text-gray-500 flex items-center justify-center gap-2">
+            Developed by 
+            <a href="https://www.instagram.com/omar_nabil.8?igsh=b29lZHNvZW85bjAy&utm_source=qr" target="_blank" rel="noopener noreferrer" class="text-gray-600 font-medium hover:text-pink-600 transition-colors flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44-.645-1.44-1.441-1.44z"/>
+                </svg>
+                Omar Nabil
+            </a>
+        </p>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox">
+        <span id="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Enlarged view">
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button onclick="scrollToTop()" id="scrollTopBtn" title="Go to top">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        // --- Lightbox Functionality ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const galleryImages = document.querySelectorAll('.gallery-img');
+        const closeBtn = document.getElementById('lightbox-close');
+
+        galleryImages.forEach(img => {
+            img.addEventListener('click', () => {
+                lightbox.style.display = 'block';
+                lightboxImg.src = img.src;
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            });
+        });
+
+        const closeLightbox = () => {
+            lightbox.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restore scrolling
+        };
+
+        closeBtn.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target !== lightboxImg) {
+                closeLightbox();
+            }
+        });
+
+        // --- Scroll to Top Button ---
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+        
+        window.onscroll = function() {
+            scrollFunction();
+        };
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollTopBtn.style.display = "block";
+            } else {
+                scrollTopBtn.style.display = "none";
+            }
+        }
+        
+        function scrollToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // --- ScrollReveal Animations ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const sr = ScrollReveal({
+                distance: '50px',
+                duration: 1000,
+                easing: 'ease-in-out',
+                reset: false // Animations will only happen once
+            });
+
+            // Animate section titles
+            sr.reveal('.section-title', {
+                origin: 'top',
+                delay: 200
+            });
+
+            // Animate gallery items with a staggered effect
+            sr.reveal('.gallery-item', {
+                origin: 'bottom',
+                interval: 100 // Reveals items one after another
+            });
+            
+            // Animate the Instagram button
+            sr.reveal('.instagram-btn', {
+                origin: 'bottom',
+                delay: 300,
+                distance: '30px'
+            });
+        });
+    </script>
+
+</body>
+</html>
